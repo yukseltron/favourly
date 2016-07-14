@@ -11,10 +11,10 @@ class Parser:
     points = 0
     tup = []
 
-    def __init__(self, msg):
+    def __init__(self, msg, token):
         j = json.load(msg)
         self.timestamp = j['ts']
-        payload = {'token': 'xoxp-3490251431-53873975141-59895620595-1daeaecbd5', 'user': j['user']}
+        payload = {'token': token, 'user': j['user']}
         r = requests.get('https://slack.com/api/users.info', params=payload)
         u = json.loads(r.text)
         self.user = u['user']['name']
