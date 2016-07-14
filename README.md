@@ -18,7 +18,7 @@ Complete a favour by typing:
 
 ## How to approve a completed Favour
 
-Create a favour by typing:
+Approve a favour by typing:
 ```
 @favourly approve
 ```
