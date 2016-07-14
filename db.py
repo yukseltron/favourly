@@ -13,6 +13,7 @@ connection = psycopg2.connect(host='localhost', database='Favorly', user='postgr
 cursor = connection.cursor()
 ins = 'INSERT INTO favors(favor, time_stamp, userid, points, done_by, completed) VALUES (%s, %s, %s, %s, %s, %s)'
 sel = "SELECT favor, points FROM favors WHERE (completed = false) AND (done_by = 'null')"
+sel2 = "SELECT userid, done_by, points, favor FROM favors WHERE completed = false AND userid = %s"
 up1 = "UPDATE favors SET done_by = %s WHERE favor = %s"
 up2 = "UPDATE favors SET completed = true WHERE completed = false AND userid = %s"
 user = ' '
@@ -32,6 +33,8 @@ elif parsed.type == 1:
     cursor.execute(up1, list(reversed(results)))
 
 elif parsed.type == 2:
+    cursor.execute(sel2, results)
+    row = cursor.fetchall()
     cursor.execute(up2, results)
 
 elif parsed.type == 3:      # view
