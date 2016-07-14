@@ -1,44 +1,93 @@
 import requests
 import json
 
+#slack username, points, reason
+#toUser and fromUser are bonusly IDs
+def doAll(toUser, fromUser, points, reason):
+    toId = findUserId(toUser)
+    fromId = findUserId(fromUser)
+    toEmail = findUserEmail(toId)
+    fromEmail = findUserEmail(fromId)
 
-#toUser and fromUser must be emails
-def updateBonusly(toEmail, toUser, fromEmail, fromUser, points, reason):
-    if checkViable(fromUser, points) == True :
-        payload = "{\"reason\":\"'+' + points + ' ' + fromUser + toUser + ' for ' + reason \",\"parent_bonus_id\":\"24abcdef1234567890abcdef\",\"giver_email\":\"fromEmail\"}"
-
-        headers = {
-        'accept': "application/json",
-        'content-type': "application/json"
-        }
-
-        r = requests.post('https://bonus.ly/api/v1/bonuses?access_token=c7c0773204728847c1a41c88395c2cac', payload, headers)
+    if (checkViable(toId, fromId, points)) == True:
+        updateBonusly(toId, toEmail, fromId, fromEmail, points, reason)
     else :
         raise Exception("This favourly cannot happen!")
 
 
+def updateBonusly(toId, toEmail, fromId, fromEmail, points, reason):
+    giveBonusly(fromId, fromEmail, reason, points)
+    getBonusly(toId, reason)
+
+
+def giveBonusly(fromId, fromEmail, reason, points):
+    payload = "{\"reason\":\"+\",\"parent_bonus_id\":\"fromId\",\"giver_email\":\"fromEmail\"}"
+
+    headers = {
+    'accept': "application/json",
+    'content-type': "application/json"
+    }
+
+    r = requests.post('https://bonus.ly/api/v1/bonuses?access_token=c7c0773204728847c1a41c88395c2cac', payload, headers)
+    s = r.text
+    print("GIVE:", s)
+
+def getBonusly(toId, reason):
+    payload = "{\"reason\":\"reason\"}"
+
+    headers = {
+    'accept': "application/json",
+    'content-type': "application/json"
+    }
+
+    r = requests.put('https://bonus.ly/api/v1/bonuses?access_token=c7c0773204728847c1a41c88395c2cac', payload, headers)
+    s = r.text
+    print("GET:", s)
+
 
 #see if the transanction is legal
-def checkViable(fromUser, toUser, points):
+def checkViable(fromId, toId, points):
     headers = { 'accept': "application/json" }
 
-    r = requests.get('https://bonus.ly/api/v1/users/' + fromUser + '?access_token=c7c0773204728847c1a41c88395c2cac', headers=headers)
-    s = r.text
-    t = json.loads(s)
+    r1 = requests.get('https://bonus.ly/api/v1/users/' + fromId + '?access_token=c7c0773204728847c1a41c88395c2cac', headers=headers)
+    r2 = requests.get('https://bonus.ly/api/v1/users/' + toId + '?access_token=c7c0773204728847c1a41c88395c2cac', headers=headers)
 
-    canGive = t[u'result'][u'can_give']
-    if points not in t[u'result'][u'give_amounts'] :
+    s1 = r1.text
+    s2 = r2.text
+
+    t1 = json.loads(s1)
+    t2 = json.loads(s2)
+
+    if points not in t1[u'result'][u'give_amounts'] :
         return False
 
-    if t[u'result'][u'can_give'] == False :
+    if t1[u'result'][u'can_give'] == False :
         return False
 
-    if t[u'result'][u'can_receive'] == False :
+    if t2[u'result'][u'can_receive'] == False :
         return False
 
     return True
 
-print(checkViable('5783a170be87004b667fe885', 1))
+
+#TODO find by username, not email
+def findUserId(user):
+    headers = { 'accept': "application/json" }
+
+    r = requests.get('https://bonus.ly/api/v1/users?email=' + user + '@concur.com'  + '&access_token=c7c0773204728847c1a41c88395c2cac', headers=headers)
+    s = r.text
+    t = json.loads(s)
+
+    return t[u'result'][0][u'id']
 
 
-#all of it by tomorrow morning at 11:00 by the latest
+def findUserEmail(userId):
+    headers = { 'accept': "application/json" }
+
+    r = requests.get('https://bonus.ly/api/v1/users/' + userId + '?access_token=c7c0773204728847c1a41c88395c2cac', headers=headers)
+    s = r.text
+    t = json.loads(s)
+
+    return t[u'result'][u'email']
+
+doAll('hamid.yuksel', 'krey.warshaw', 1, 'for being a nice guy')
