@@ -1,4 +1,5 @@
 import json
+import requests
 
 
 class Parser:
@@ -13,7 +14,10 @@ class Parser:
     def __init__(self, msg):
         j = json.load(msg)
         self.timestamp = j['ts']
-        self.user = j['user']
+        payload = {'token': 'xoxp-3490251431-53873975141-59895620595-1daeaecbd5', 'user': j['user']}
+        r = requests.get('https://slack.com/api/users.info', params=payload)
+        u = json.loads(r.text)
+        self.user = u['user']['name']
         t = j['text']
         wl = t.split(" ")
         if wl[0] == "do":
