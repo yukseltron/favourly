@@ -1,7 +1,7 @@
 import requests
 import json
 
-#slack username, points, reason
+#slack usernames, points, reason
 #toUser and fromUser are bonusly IDs
 def doAll(toUser, fromUser, points, reason):
     toId = findUserId(toUser)
@@ -10,18 +10,13 @@ def doAll(toUser, fromUser, points, reason):
     fromEmail = findUserEmail(fromId)
 
     if (checkViable(toId, fromId, points)) == True:
-        updateBonusly(toId, toEmail, fromId, fromEmail, points, reason)
+        giveBonusly(toUser, fromId, fromEmail, points, reason)
     else :
         raise Exception("This favourly cannot happen!")
 
-
-def updateBonusly(toId, toEmail, fromId, fromEmail, points, reason):
-    giveBonusly(fromId, fromEmail, reason, points)
-    getBonusly(toId, reason)
-
-
-def giveBonusly(fromId, fromEmail, reason, points):
-    payload = "{\"reason\":\"+\",\"parent_bonus_id\":\"fromId\",\"giver_email\":\"fromEmail\"}"
+#gives the bonusly points
+def giveBonusly(toUser, fromId, fromEmail, points, reason):
+    payload = {"reason":"+" + str(points) +  " @" + toUser + " " + reason + " #favourly", "parent_bonus_id": fromId, "giver_email": fromEmail}
 
     headers = {
     'accept': "application/json",
@@ -31,18 +26,6 @@ def giveBonusly(fromId, fromEmail, reason, points):
     r = requests.post('https://bonus.ly/api/v1/bonuses?access_token=c7c0773204728847c1a41c88395c2cac', payload, headers)
     s = r.text
     print("GIVE:", s)
-
-def getBonusly(toId, reason):
-    payload = "{\"reason\":\"reason\"}"
-
-    headers = {
-    'accept': "application/json",
-    'content-type': "application/json"
-    }
-
-    r = requests.put('https://bonus.ly/api/v1/bonuses?access_token=c7c0773204728847c1a41c88395c2cac', payload, headers)
-    s = r.text
-    print("GET:", s)
 
 
 #see if the transanction is legal
@@ -81,6 +64,7 @@ def findUserId(user):
     return t[u'result'][0][u'id']
 
 
+#Finds user id
 def findUserEmail(userId):
     headers = { 'accept': "application/json" }
 
@@ -89,5 +73,6 @@ def findUserEmail(userId):
     t = json.loads(s)
 
     return t[u'result'][u'email']
+
 
 doAll('hamid.yuksel', 'krey.warshaw', 1, 'for being a nice guy')
