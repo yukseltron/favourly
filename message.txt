@@ -1,0 +1,9 @@
+{ "type": "message",
+  "channel": "G1RGB8ZJQ",
+  "user": "U1GFS89EF",
+  "text": "completed do shiz",
+  "ts": "1468514859.000161",
+  "team": "T03EE7DCP",
+  "event": "direct_mention",
+  "match": "[ '', index: 0, input: 'do shiz' ]"
+}
