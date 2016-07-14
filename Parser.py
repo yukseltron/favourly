@@ -3,25 +3,37 @@ import json
 
 class Parser:
 
+    type = None
+    action = ""
     user = ""
     timestamp = ""
-    minutes = 0
     points = 0
+    tup = ()
 
     def __init__(self, msg):
         j = json.load(msg)
         self.timestamp = j['ts']
-        self.user = j['message']['username']
-        t = j['message']['text']
+        self.user = j['user']
+        t = j['text']
         wl = t.split(" ")
-        for i in range(len(wl)):
-            if "minutes" in wl[i] or "mins" in wl[i]:
-                self.minutes = wl[i-1]
-            if "hours" in wl[i] or "hrs" in wl[i]:
-                self.minutes = int(wl[i-1])*60
-            if "points" in wl[i] or "pts" in wl[i]:
-                self.points = wl[i-1]
+        if wl[0] == "do":
+            self.type = 0
+            for i in range(len(wl)):
+                if "points" in wl[i] or "pts" in wl[i]:
+                    self.points = wl[i-1]
+                if "do" in wl[i]:
+                    self.action = wl[i+1]
+            self.tup = (self.action, self.timestamp, self.user, self.points)
+        elif wl[0] == "completed":
+            self.type = 1
+            for i in range(len(wl)):
+                if "do" in wl[i]:
+                    self.action = wl[i + 1]
+            self.tup = (self.action, self.user)
+        elif wl[0] == "approve":
+            self.type = 2
+            self.tup = (self.user)
+
 
     def getTuple(self):
-        tup = (self.timestamp, self.user, self.minutes, self.points)
-        return tup
+        return self.tup
