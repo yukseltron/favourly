@@ -8,7 +8,7 @@ class Parser:
     user = ""
     timestamp = ""
     points = 0
-    tup = ()
+    tup = []
 
     def __init__(self, msg):
         j = json.load(msg)
@@ -23,19 +23,19 @@ class Parser:
                     self.points = wl[i-1]
                 if "do" in wl[i]:
                     self.action = wl[i+1]
-            self.tup = (self.action, self.timestamp, self.user, self.points)
+            self.tup = [self.action, self.timestamp, self.user, self.points]
         elif wl[0] == "completed":
             self.type = 1
             for i in range(len(wl)):
                 if "do" in wl[i]:
                     self.action = wl[i + 1]
-            self.tup = (self.action, self.user)
+            self.tup = [self.action, self.user]
         elif wl[0] == "approve":
             self.type = 2
-            self.tup = (self.user)
+            self.tup = [self.user]
         elif wl[0] == "favours":
             self.type = 3
-            self.tup = ()
+            self.tup = []
 
 
     def getTuple(self):
