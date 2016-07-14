@@ -37,7 +37,12 @@ class Parser:
             self.type = 1
             for i in range(len(wl)):
                 if "do" in wl[i]:
-                    self.action = wl[i + 1]
+                    sentence = ""
+                    n = 1
+                    while wl[i + n] != "for":
+                        sentence += wl[i + n] + " "
+                        n += 1
+                    self.action = sentence[:(len(sentence) - 1)]
             self.tup = [self.action, self.user]
         elif wl[0] == "approve":
             self.type = 2
