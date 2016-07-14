@@ -33,6 +33,9 @@ class Parser:
         elif wl[0] == "approve":
             self.type = 2
             self.tup = (self.user)
+        elif wl[0] == "favours":
+            self.type = 3
+            self.tup = ()
 
 
     def getTuple(self):
