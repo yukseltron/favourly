@@ -53,7 +53,7 @@ def checkViable(fromId, toId, points):
     return True
 
 
-#TODO find by username in "firstName.lastName" format
+#find username in "firstName.lastName" format
 def findUserId(user):
     headers = { 'accept': "application/json" }
 
