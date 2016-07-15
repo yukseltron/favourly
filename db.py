@@ -1,4 +1,5 @@
 from collections import OrderedDict as OD
+import NodeSucks
 from Parser import Parser as P
 import psycopg2
 import json
@@ -36,6 +37,7 @@ elif parsed.type == 2:
     cursor.execute(sel2, results)
     row = cursor.fetchall()
     cursor.execute(up2, results)
+    NodeSucks.doAll(*row)
 
 elif parsed.type == 3:      # view
     cursor.execute(sel)
