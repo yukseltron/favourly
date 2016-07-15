@@ -20,7 +20,8 @@ up2 = "UPDATE favors SET completed = true WHERE completed = false AND userid = %
 user = ' '
 jsn = OD([('favor', ''), ('time_stamp', ''), ('userid', ''), ('points', 0), ('done_by', None), ('completed', None)])
 infile = open('message.txt', 'r')
-parsed = P(infile, 'xoxp-3490251431-53873975141-59895620595-1daeaecbd5')
+token = ''
+parsed = P(infile, token)
 # results = ['DO MY SHIT', '4.0', 'aname', 2]
 results = parsed.tup
 
