@@ -3,17 +3,17 @@ import json
 
 #slack usernames, points, reason
 #toUser and fromUser are bonusly IDs
-def doAll(toUser, fromUser, points, reason):
+def doAll(toUser, fromUser, points, reason, token):
     toId = findUserId(toUser, token)
     fromId = findUserId(fromUser, token)
     toEmail = findUserEmail(toId, token)
     fromEmail = findUserEmail(fromId, token)
-    token = getToken()
 
     if (checkViable(toId, fromId, points, token)) == True:
         giveBonusly(toUser, fromId, fromEmail, points, reason, token)
     else :
         raise Exception("This favourly cannot happen!")
+
 
 #gives the bonusly points
 def giveBonusly(toUser, fromId, fromEmail, points, reason, token):
@@ -74,9 +74,3 @@ def findUserEmail(userId, token):
     t = json.loads(s)
 
     return t[u'result'][u'email']
-    
-    
-#Get the API key
-def getToken():
-    token = input("enter API access token: ")
-    return token
